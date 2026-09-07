@@ -1,0 +1,44 @@
+generated: '2026-09-07'
+method: searched
+source: https://www.drinkaccelerator.com/agents.md
+docs: https://www.drinkaccelerator.com/llms.txt
+limit_count: 0
+rate_limits: []
+note: >-
+  An honest zero. Rate limiting is DOCUMENTED but never QUANTIFIED: /agents.md and
+  /llms.txt both state "Respect rate limits. The MCP endpoint is rate-limited per IP.
+  Back off on 429 responses." No numeric limit, no window, no burst, and no
+  RateLimit-* or Retry-After header is published anywhere, so there is no limit to
+  record as a row. Live probes of the MCP endpoint and the GraphQL endpoint returned
+  no rate-limit response headers.
+documented_but_unquantified:
+- surface: mcp
+  endpoint: https://www.drinkaccelerator.com/api/ucp/mcp
+  scope: per-ip
+  window: null
+  limit: null
+  burst: null
+  status_on_exhaustion: 429
+  response_headers: []
+  guidance: Back off on 429 responses.
+  source: https://www.drinkaccelerator.com/agents.md
+cost_signal:
+- surface: graphql
+  endpoint: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+  field: extensions.cost.requestedQueryCost
+  observed_value: 3
+  observed_on: anonymous introspection probe
+  note: >-
+    The Storefront GraphQL API returns a per-request cost object in extensions. This
+    is the only runtime consumption signal either surface emits, and it is a platform
+    behaviour, not a published limit by this company - no throttleStatus was returned
+    on the anonymous call.
+x-evidence:
+- url: https://www.drinkaccelerator.com/agents.md
+  http_status: 200
+- url: https://www.drinkaccelerator.com/api/ucp/mcp
+  http_status: 200
+  note: no RateLimit-* or Retry-After headers on the response
+- url: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+  http_status: 200
+  note: extensions.cost.requestedQueryCost = 3

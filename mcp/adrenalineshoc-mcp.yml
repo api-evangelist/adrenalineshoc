@@ -1,0 +1,152 @@
+generated: '2026-09-07'
+method: searched
+source: https://www.drinkaccelerator.com/api/ucp/mcp
+status: published
+server:
+  name: adrenalineshoc-ucp-shopping
+  transport: http
+  url: https://www.drinkaccelerator.com/api/ucp/mcp
+  alternate_url: https://a-shoc.myshopify.com/api/ucp/mcp
+  protocol: MCP over JSON-RPC 2.0
+  authentication: none for tools/list; tools/call requires a resolvable UCP agent profile
+    URI, not a credential
+  discovery:
+  - https://www.drinkaccelerator.com/.well-known/ucp
+  - https://www.drinkaccelerator.com/agents.md
+  - https://www.drinkaccelerator.com/llms.txt
+  - https://www.drinkaccelerator.com/robots.txt
+implements:
+  protocol: Universal Commerce Protocol (UCP)
+  service: dev.ucp.shopping
+  version: '2026-08-25'
+  supported_versions:
+  - '2026-08-25'
+  - '2026-04-08'
+  - '2026-01-23'
+  spec: https://ucp.dev/2026-08-25/specification/overview/
+  schema: https://ucp.dev/2026-08-25/services/shopping/mcp.openrpc.json
+  capabilities:
+  - dev.ucp.shopping.checkout
+  - dev.ucp.shopping.fulfillment
+  - dev.ucp.shopping.discount
+  - dev.ucp.shopping.cart
+  - dev.ucp.shopping.order
+  - dev.ucp.shopping.catalog.search
+  - dev.ucp.shopping.catalog.lookup
+  - dev.shopify.catalog
+  payment_handlers:
+  - id: gpay
+    handler: com.google.pay
+    version: '2026-01-11'
+    merchant_name: Accelerator Active Energy
+    merchant_origin: www.drinkaccelerator.com
+    networks: [VISA, MASTERCARD, AMEX, DISCOVER]
+  - id: shopify.card
+    handler: dev.shopify.card
+    version: '2026-01-15'
+  - id: shop_pay
+    handler: dev.shopify.shop_pay
+    version: '2026-04-08'
+  platform: Shopify
+  note: >-
+    The tool contract is defined by the UCP shopping service and implemented by
+    Shopify - it is not authored by A Shoc Beverage. The endpoint, the merchant
+    profile, the agent policy and the catalog it fronts are served from the company's
+    own host, which is why it is recorded here.
+tools_manifest:
+  file: adrenalineshoc-tools-list.json
+  method: probed
+  source: POST https://www.drinkaccelerator.com/api/ucp/mcp {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+  http_status: 200
+  note: Saved verbatim. All thirteen tools carry a full JSON Schema inputSchema - anonymous
+    introspection is open, so no auth-gated fallback was needed.
+tools:
+- name: search_catalog
+  category: catalog
+  description: Search for products from the online store using a natural-language query,
+    filter criteria, or both. Cursor-paginated via pagination.cursor, default limit
+    10.
+  required: [meta, catalog]
+- name: lookup_catalog
+  category: catalog
+  description: Look up multiple products or variants by identifier in one call.
+  required: [meta, catalog]
+- name: get_product
+  category: catalog
+  description: Retrieve complete product detail by identifier, with a relevant set of
+    variants.
+  required: [meta, catalog]
+- name: create_cart
+  category: cart
+  description: Creates a new cart.
+  required: [meta, cart]
+- name: get_cart
+  category: cart
+  description: Get the cart contents.
+  required: [meta, id]
+- name: update_cart
+  category: cart
+  description: Perform updates to a cart.
+  required: [meta, cart, id]
+- name: cancel_cart
+  category: cart
+  description: Cancels a cart.
+  required: [meta, id]
+- name: create_checkout
+  category: checkout
+  description: Creates a checkout. Returns line items, totals, discounts and taxes.
+  required: [meta, checkout]
+- name: get_checkout
+  category: checkout
+  description: Returns details about the checkout, including line items, totals and
+    applicable discounts or taxes.
+  required: [meta, id]
+- name: update_checkout
+  category: checkout
+  description: Updates a checkout - used to set the shipping address and delivery method.
+  required: [meta, checkout, id]
+- name: complete_checkout
+  category: checkout
+  description: Completes a checkout and returns the order ID, Thank You Page URL, or
+    errors. Requires explicit contemporaneous human buyer approval of payment.
+  required: [meta, id, checkout]
+  human_approval_required: true
+- name: cancel_checkout
+  category: checkout
+  description: Cancels a checkout.
+  required: [meta, id]
+- name: get_order
+  category: order
+  description: Get the details of an order.
+  required: [meta, id]
+coverage:
+  tools_total: 13
+  with_input_schema: 13
+  categories:
+    catalog: 3
+    cart: 4
+    checkout: 5
+    order: 1
+observed_catalog_state:
+  products: 0
+  note: >-
+    The commerce protocol is live but the store it fronts is empty. /products.json
+    and /collections/all/products.json both return {"products":[]}, and the sitemap
+    index carries page, collection and blog sitemaps but no product sitemap. An agent
+    calling search_catalog on this merchant will find nothing to buy; the storefront
+    directs purchase to Amazon and physical retail.
+  checked: '2026-09-07'
+deployment:
+  mode: remote
+  endpoint: https://www.drinkaccelerator.com/api/ucp/mcp
+  auth: none
+  verified: probed
+  probe: live
+  tools: 13
+  checked: '2026-09-07'
+x-evidence:
+  fetched: '2026-09-07'
+  url: https://www.drinkaccelerator.com/api/ucp/mcp
+  method: POST tools/list
+  http_status: 200
+  content_type: application/json

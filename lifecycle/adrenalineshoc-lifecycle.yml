@@ -1,0 +1,97 @@
+generated: '2026-09-07'
+method: probed
+source:
+- https://www.drinkaccelerator.com/.well-known/ucp
+- https://www.drinkaccelerator.com/api/2026-07/graphql.json
+- https://www.drinkaccelerator.com/agents.md
+versioning:
+- surface: ucp-mcp
+  scheme: dated release train
+  current: '2026-08-25'
+  supported:
+  - version: '2026-08-25'
+    label: latest stable
+  - version: '2026-04-08'
+    profile: https://a-shoc.myshopify.com/.well-known/ucp/2026-04-08
+  - version: '2026-01-23'
+    profile: https://a-shoc.myshopify.com/.well-known/ucp/2026-01-23
+  discovery: https://www.drinkaccelerator.com/.well-known/ucp
+  note: Three versions are advertised concurrently, so the two previous trains are still
+    served. The version-pinned profiles are published on the myshopify canonical host.
+- surface: storefront-graphql
+  scheme: dated version in URI path
+  observed_answering: ['2026-07', '2026-04', '2025-01', '2024-04']
+  example: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+  introspection_field: publicApiVersions
+  note: The schema exposes a publicApiVersions query field listing supported and unsupported
+    versions. Version policy is set by the platform vendor, not by this company.
+deprecation:
+  policy_url: null
+  policy_published_by_provider: false
+  sunset_header: unknown
+  detail: >-
+    A Shoc Beverage publishes no deprecation or sunset policy of its own. Deprecation
+    is visible only inside the GraphQL schema, where fields carry the standard
+    @deprecated directive with a deprecationReason. No Deprecation pointer is emitted.
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: null
+  published: false
+  detail: >-
+    No status page exists on any host this company controls. status.drinkaccelerator.com
+    and status.ashoc.com both return NXDOMAIN. The storefront runs on Shopify, whose
+    platform status page is a vendor property and is not advertised by this company.
+    No StatusPage pointer is emitted.
+changelog:
+  url: null
+  published: false
+  detail: >-
+    No dated changelog for any API surface, and no dated developer or release notes
+    anywhere on the site. The UCP version train above is the only release signal. No
+    ChangeLog pointer or changelog/ artifact is emitted.
+blog:
+  url: https://www.drinkaccelerator.com/blogs/news
+  status: 200
+  posts: 0
+  published: false
+  detail: >-
+    The Shopify blog route is served and returns a real page, but it carries no
+    articles - the rendered body is the heading "News" and nothing else, and
+    sitemap_blogs_1.xml lists only the blog index itself with no article URLs. No Blog
+    pointer is emitted: an empty listing would credit this company with content
+    operations it does not run.
+  checked: '2026-09-07'
+customer_accounts:
+  login_url: https://www.drinkaccelerator.com/account/login
+  status: 200
+  detail: >-
+    /account/login 302s to the Shopify Customer Accounts login for shop 7133691957 and
+    resolves 200, requesting scope "openid email customer-account-api:full" - the same
+    scopes the OIDC discovery document advertises. A Login pointer is emitted.
+  checked: '2026-09-07'
+brand_lifecycle:
+  note: >-
+    Worth recording because it bears on the durability of every surface here. The
+    brand launched as Adrenaline Shoc / A SHOC and now trades as Accelerator Active
+    Energy; ashoc.com 301s to www.drinkaccelerator.com and the Shopify shop is still
+    named a-shoc. The storefront's own catalog is empty - /products.json returns zero
+    products - so the live commerce protocol currently fronts no purchasable
+    inventory, and purchase is directed to Amazon and physical retail.
+  checked: '2026-09-07'
+deprecated_operations: []
+deprecated_operations_note: No OpenAPI exists. Deprecated GraphQL fields are marked inline
+  in graphql/adrenalineshoc-storefront.graphql.
+x-evidence:
+- url: https://www.drinkaccelerator.com/.well-known/ucp
+  http_status: 200
+- url: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+  http_status: 200
+- url: https://www.drinkaccelerator.com/products.json
+  http_status: 200
+  note: 'body {"products":[]}'
+- url: https://status.drinkaccelerator.com/
+  http_status: 0
+  note: DNS did not resolve

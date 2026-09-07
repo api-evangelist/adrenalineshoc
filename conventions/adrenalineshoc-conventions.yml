@@ -1,0 +1,171 @@
+generated: '2026-09-07'
+method: searched
+source:
+- https://www.drinkaccelerator.com/agents.md
+- https://www.drinkaccelerator.com/llms.txt
+- https://www.drinkaccelerator.com/robots.txt
+- mcp/adrenalineshoc-tools-list.json
+- graphql/adrenalineshoc-storefront.graphql
+authentication:
+  style: anonymous for the agent commerce and catalog surfaces; OpenID Connect for customer
+    accounts
+  detail: authentication/adrenalineshoc-authentication.yml
+  agent_identity:
+    mechanism: UCP agent profile
+    location: every MCP tool call, required object meta.ucp-agent.profile
+    type: URI identifying the calling agent's published profile
+    note: >-
+      This is the only field required on all thirteen tools. The store requires an
+      agent to identify itself with a fetchable profile before any catalog, cart or
+      checkout call; tools/list itself is open.
+idempotency:
+  supported: false
+  coverage: none
+  detail: >-
+    No idempotency key appears anywhere in the thirteen tool input schemas, and neither
+    /agents.md nor /llms.txt documents one. Cart and checkout mutations are made safe
+    by returning a server-assigned id on create and requiring that id on every later
+    call, not by a client-supplied idempotency token. No Idempotency pointer is emitted.
+reversibility:
+  grade: documented
+  detail: >-
+    Two of the six mutating tools have an explicit reversal, named and shipped in the
+    contract, but no published window states how long either remains valid, and no
+    reversal exists for the one financially consequential operation.
+  surfaces:
+  - write: create_cart / update_cart
+    reversal: cancel_cart
+    operation: cancel_cart
+    window: null
+    window_source: null
+    note: The tool description is one line - "Cancels a cart." No expiry, no TTL, and
+      no cart-lifetime statement appears in /agents.md, /llms.txt or the tool schema.
+  - write: create_checkout / update_checkout
+    reversal: cancel_checkout
+    operation: cancel_checkout
+    window: null
+    window_source: null
+    note: '"Cancels a checkout." Cancellation is only meaningful before complete_checkout;
+      the docs do not say so and do not state a timeout.'
+  - write: complete_checkout
+    reversal: null
+    operation: null
+    window: null
+    note: >-
+      There is no refund, void or reverse tool in the UCP shopping tool set, and no
+      order-cancellation tool - get_order is read-only. Once complete_checkout
+      succeeds, the agent has no protocol-level path to undo the purchase; reversal
+      is a human customer-service action against Shopify or the merchant. This is the
+      single most important gap for an agent operating on a buyer's money here.
+  read_only_surfaces: [search_catalog, lookup_catalog, get_product, get_cart, get_checkout,
+    get_order]
+dry_run_mode:
+  supported: false
+  detail: No test mode, sandbox, simulation flag or test-order facility is published
+    for this storefront. See sandbox note below.
+pagination:
+  style: cursor
+  request_params:
+  - name: catalog.pagination.limit
+    surface: mcp
+    default: 10
+    minimum: 1
+  - name: catalog.pagination.cursor
+    surface: mcp
+  response_fields:
+  - pagination.cursor
+  graphql_equivalent:
+    style: Relay connections - first/last/after/before with pageInfo
+  detail: Verified in the search_catalog inputSchema; pagination.limit carries default
+    10 and minimum 1.
+buyer_context:
+  documented: true
+  fields:
+  - context.address_country
+  - context.address_region
+  - context.postal_code
+  - context.language
+  - context.currency
+  - context.intent
+  purpose: Localization, pricing and availability accuracy. /agents.md instructs agents
+    to pass context.address_country and context.currency.
+  platform_signals: [dev.ucp.buyer_ip, dev.ucp.user_agent]
+money_representation:
+  format: integer minor units paired with an ISO 4217 currency code
+  example: '{"amount": 600, "currency": "USD"} is $6.00'
+  documented_in: every price-bearing tool description
+  agent_guidance: Convert to major units before quoting a price to a buyer; zero-decimal
+    currencies such as JPY are already whole units.
+versioning:
+  ucp:
+    scheme: dated release train
+    current: '2026-08-25'
+    supported: ['2026-08-25', '2026-04-08', '2026-01-23']
+    discovery: https://www.drinkaccelerator.com/.well-known/ucp
+  graphql:
+    scheme: dated API version in the URL path
+    observed_answering: ['2026-07', '2026-04', '2025-01', '2024-04']
+    example: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+    introspectable_versions_field: publicApiVersions
+  detail: lifecycle/adrenalineshoc-lifecycle.yml
+error_envelope:
+  format: JSON-RPC 2.0 error object
+  fields: [code, message, data]
+  detail: errors/adrenalineshoc-problem-types.yml
+  note: >-
+    The MCP endpoint speaks JSON-RPC 2.0, not RFC 9457 problem+json, and an application
+    error can arrive with a non-200 HTTP status - the observed agent-profile failure
+    returned HTTP 422 with a JSON-RPC error body. GraphQL returns HTTP 200 with an
+    errors[] array.
+rate_limiting:
+  documented: true
+  quantified: false
+  scope: per IP
+  signal: HTTP 429
+  guidance: 'Published rule in /agents.md and /llms.txt: "Respect rate limits. The MCP
+    endpoint is rate-limited per IP. Back off on 429 responses."'
+  graphql_signal:
+    field: extensions.cost
+    detail: Storefront GraphQL responses carry an extensions.cost object with requestedQueryCost
+      - observed live (requestedQueryCost 3 on the introspection probe).
+  detail: rate-limits/adrenalineshoc-rate-limits.yml
+sandbox:
+  published: false
+  detail: >-
+    No test mode or test credentials are published for this merchant. /agents.md points
+    agents at Shopify's platform-wide mock.shop for practice against sample data, but
+    that is a vendor property with no relation to this store's catalog, so no sandbox/
+    artifact is emitted.
+agent_policy:
+  human_approval_required_for: [payment, checkout completion, order placement]
+  statement: >-
+    "Checkouts are for humans. Do NOT complete checkout, payment, or order placement
+    automatically - no scripted form fills, browser automation, or end-to-end agent
+    flows that finalize payment without an explicit, contemporaneous human approval
+    step." (robots.txt and /agents.md)
+  sanctioned_paths:
+  - https://www.drinkaccelerator.com/api/ucp/mcp
+  - https://shop.app/SKILL.md
+  crawling: Public product, collection, page, blog, policy, cart and localized HTML is
+    explicitly crawlable per robots.txt.
+  contact: bots@shopify.com
+discovery_convention:
+  canonical_agent_doc: https://www.drinkaccelerator.com/agents.md
+  mirrors:
+  - https://www.drinkaccelerator.com/llms.txt
+  advertised_in: [robots.txt, sitemap_agentic_discovery.xml]
+observed_catalog_state:
+  products: 0
+  note: >-
+    A convention worth recording because it changes what an agent should expect: the
+    protocol answers but the catalog is empty. /products.json returns {"products":[]}
+    and no product sitemap exists. search_catalog will return no results.
+  checked: '2026-09-07'
+cross_links:
+  authentication: authentication/adrenalineshoc-authentication.yml
+  scopes: scopes/adrenalineshoc-scopes.yml
+  errors: errors/adrenalineshoc-problem-types.yml
+  lifecycle: lifecycle/adrenalineshoc-lifecycle.yml
+  rate_limits: rate-limits/adrenalineshoc-rate-limits.yml
+  mcp: mcp/adrenalineshoc-mcp.yml
+  well_known: well-known/adrenalineshoc-well-known.yml

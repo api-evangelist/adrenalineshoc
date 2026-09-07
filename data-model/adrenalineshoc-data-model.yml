@@ -1,0 +1,173 @@
+generated: '2026-09-07'
+method: derived
+source:
+- mcp/adrenalineshoc-tools-list.json
+- graphql/adrenalineshoc-storefront.graphql
+note: >-
+  Derived from the two machine-readable contracts actually served on this company's
+  host - the UCP/MCP tool input schemas and the introspected Storefront GraphQL
+  schema. There is no OpenAPI to derive $ref links from, so entity relationships come
+  from id-reference fields in the tool schemas and from GraphQL connection fields
+  verified in the SDL.
+entities:
+- name: Product
+  surfaces: [mcp, graphql, json]
+  graphql_type: Product
+  identifiers: [id, handle]
+  json_endpoint: GET /products/{handle}.json
+  relationships:
+  - {kind: has_many, target: ProductVariant, via: variants}
+  - {kind: belongs_to_many, target: Collection, via: collections}
+  - {kind: has_many, target: Image, via: images}
+  note: No instances exist at profiling time - the store catalog is empty.
+- name: ProductVariant
+  surfaces: [mcp, graphql]
+  graphql_type: ProductVariant
+  identifiers: [id]
+  relationships:
+  - {kind: belongs_to, target: Product, via: product}
+  note: The variant id is what a cart line item references - cart.line_items[].item.id
+    is documented as "The Product Variant ID to add or update."
+- name: Collection
+  surfaces: [graphql, json]
+  graphql_type: Collection
+  identifiers: [id, handle]
+  json_endpoint: GET /collections/{handle}/products.json
+  relationships:
+  - {kind: has_many, target: Product, via: products}
+  known_handles: [featured, variety-packs, ashoc, merchandise]
+- name: Cart
+  surfaces: [mcp, graphql]
+  graphql_type: Cart
+  identifiers: [id]
+  relationships:
+  - {kind: has_many, target: CartLine, via: line_items}
+  - {kind: has_one, target: Buyer, via: buyer}
+  - {kind: has_one, target: BuyerContext, via: context}
+  - {kind: has_one, target: Attribution, via: attribution}
+  - {kind: has_one, target: Checkout, via: checkout.cart_id, note: A cart is converted
+      to a checkout via checkout.cart_id; the UCP tools treat them as separate ids.}
+- name: CartLine
+  surfaces: [mcp, graphql]
+  graphql_type: BaseCartLine
+  identifiers: [id]
+  relationships:
+  - {kind: belongs_to, target: Cart, via: cart}
+  - {kind: belongs_to, target: ProductVariant, via: item.id}
+  fields: [id, quantity, item.id]
+- name: Checkout
+  surfaces: [mcp]
+  graphql_type: null
+  identifiers: [id]
+  fields: [payment, line_items, buyer, context, attribution, cart_id, fulfillment, discounts]
+  relationships:
+  - {kind: has_many, target: CartLine, via: line_items}
+  - {kind: belongs_to, target: Cart, via: cart_id}
+  - {kind: has_one, target: Fulfillment, via: fulfillment}
+  - {kind: has_many, target: Discount, via: discounts.codes}
+  - {kind: has_many, target: PaymentInstrument, via: payment.instruments}
+  - {kind: has_one, target: Order, via: order, note: complete_checkout yields the order.}
+  note: MCP-only. The Storefront GraphQL schema exposes no checkout type; see mcp/adrenalineshoc-tool-crosswalk.yml
+    mcp_only.
+- name: PaymentInstrument
+  surfaces: [mcp]
+  identifiers: [id]
+  fields: [id, handler_id, type, billing_address, credential]
+  relationships:
+  - {kind: belongs_to, target: Checkout, via: payment.instruments}
+  - {kind: belongs_to, target: PaymentHandler, via: handler_id}
+  note: Conditional schema - handler_id apple-pay requires billing_address and an apple_pay_token
+    credential; every other handler requires credential.token and credential.type.
+- name: PaymentHandler
+  surfaces: [well-known]
+  identifiers: [id]
+  known_instances:
+  - {id: gpay, handler: com.google.pay}
+  - {id: shopify.card, handler: dev.shopify.card}
+  - {id: shop_pay, handler: dev.shopify.shop_pay}
+  source: well-known/adrenalineshoc-ucp.json
+- name: Fulfillment
+  surfaces: [mcp]
+  fields: [methods]
+  relationships:
+  - {kind: belongs_to, target: Checkout, via: fulfillment}
+  note: The UCP profile declares fulfillment method_combinations [["shipping"]] and an
+    empty multi_destination list - this merchant ships to one destination per order.
+- name: Discount
+  surfaces: [mcp]
+  fields: [codes]
+  relationships:
+  - {kind: belongs_to, target: Checkout, via: discounts}
+  note: 'Tool guidance: only prompt for a code if the customer mentions having one.'
+- name: Order
+  surfaces: [mcp, graphql]
+  graphql_type: Order
+  identifiers: [id]
+  relationships:
+  - {kind: belongs_to, target: Customer, via: customer}
+  - {kind: has_many, target: CartLine, via: lineItems}
+  note: Reachable in GraphQL only via customer.orders behind a customer access token;
+    the MCP get_order tool resolves by id. Read-only on both surfaces - there is no
+    cancel or refund operation.
+- name: Buyer
+  surfaces: [mcp]
+  fields: [email, phone_number]
+  relationships:
+  - {kind: belongs_to, target: Cart, via: buyer}
+- name: BuyerContext
+  surfaces: [mcp]
+  fields: [address_country, address_region, postal_code, language, currency, intent,
+    eligibility]
+  note: Provisional localization and pricing hints; superseded by authoritative data
+    such as a shipping address, and unsupported hints may be ignored without error.
+    eligibility entries are reverse-domain identifiers for loyalty or payment perks.
+- name: Attribution
+  surfaces: [mcp]
+  fields: [referring_domain, click_id_tag, click_id_value, activity_id_tag, activity_id_value,
+    utm_campaign, utm_source, utm_medium, utm_content, utm_term]
+  note: Marketing attribution forwarded to the cart for downstream reporting - an agent
+    calling this API is expected to carry the buyer's campaign context.
+- name: Customer
+  surfaces: [graphql]
+  graphql_type: Customer
+  identifiers: [id, email]
+  relationships:
+  - {kind: has_many, target: Order, via: orders}
+  - {kind: has_many, target: MailingAddress, via: addresses}
+  - {kind: has_one, target: MailingAddress, via: defaultAddress}
+  auth: Requires a customer access token; see authentication/adrenalineshoc-authentication.yml.
+- name: Article
+  surfaces: [graphql]
+  graphql_type: Article
+  relationships:
+  - {kind: belongs_to, target: Blog, via: blog}
+- name: Blog
+  surfaces: [graphql]
+  graphql_type: Blog
+  relationships:
+  - {kind: has_many, target: Article, via: articles}
+  human_url: https://www.drinkaccelerator.com/blogs/news
+- name: Page
+  surfaces: [graphql]
+  graphql_type: Page
+  note: 95 pages in the sitemap - flavor pages, store locator, athletes, sweepstakes,
+    FAQ, contact.
+- name: Shop
+  surfaces: [graphql]
+  graphql_type: Shop
+  note: Store-level metadata, policies and payment settings.
+core_flow:
+- search_catalog or get_product resolves a Product and its ProductVariant id
+- create_cart with line_items[].item.id = variant id yields a Cart id
+- update_cart mutates lines, buyer, context and attribution against that Cart id
+- create_checkout with cart_id promotes the cart, yielding a Checkout id
+- update_checkout attaches fulfillment method and payment instrument
+- complete_checkout requires human buyer approval and yields an Order
+- cancel_cart and cancel_checkout reverse the two intermediate states; nothing reverses
+  a completed order
+coverage:
+  entities: 19
+  graphql_types_total: 428
+  note: Only the entities reachable from the documented agent flows and the GraphQL root
+    fields are modelled; the full 428-type schema is in graphql/.
+render: null

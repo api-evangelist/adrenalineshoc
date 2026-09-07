@@ -1,0 +1,157 @@
+generated: '2026-09-07'
+method: probed
+source: https://www.drinkaccelerator.com/.well-known/
+notes: >-
+  Every host this record knows was probed: the canonical storefront host
+  (www.drinkaccelerator.com), the apex (drinkaccelerator.com), the legacy brand
+  domain ashoc.com and its www alias, and the Shopify canonical host
+  a-shoc.myshopify.com. A control probe of /.well-known/zzz-nonexistent-abc on
+  www.drinkaccelerator.com returned 404, so the 200s below are real documents and
+  not a catch-all soft-200. The OIDC and RFC 8414 metadata are served by Shopify
+  Customer Accounts for shop id 7133691957 on the merchant's behalf; the UCP
+  merchant profile is store-specific. shopify.dev is the platform vendor's
+  documentation host and is not probed here - it is not a host this company
+  controls.
+hosts:
+- host: https://www.drinkaccelerator.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    content_type: application/json
+    file: adrenalineshoc-ucp.json
+    description: Universal Commerce Protocol merchant profile - supported versions,
+      service endpoints, capabilities and payment handlers.
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: adrenalineshoc-openid-configuration.json
+    description: OpenID Connect discovery for Shopify Customer Accounts.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: adrenalineshoc-oauth-authorization-server.json
+    description: RFC 8414 authorization server metadata - byte-identical to the OIDC
+      discovery document.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://drinkaccelerator.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+  - path: /.well-known/security.txt
+    status: 301
+    note: Redirects to https://www.drinkaccelerator.com/.well-known/security.txt, which
+      is 404.
+  - path: /.well-known/agent-card.json
+    status: 301
+  - path: /.well-known/agent.json
+    status: 301
+  - path: /.well-known/api-catalog
+    status: 301
+  - path: /.well-known/ai-plugin.json
+    status: 301
+- host: https://ashoc.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    content_type: application/json
+    note: Same merchant profile as the canonical host; the legacy A SHOC brand domain
+      resolves to the same Shopify shop.
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+  - path: /.well-known/security.txt
+    status: 301
+  - path: /.well-known/agent-card.json
+    status: 301
+  - path: /.well-known/agent.json
+    status: 301
+  - path: /.well-known/api-catalog
+    status: 301
+  - path: /.well-known/ai-plugin.json
+    status: 301
+- host: https://www.ashoc.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+  - path: /.well-known/security.txt
+    status: 301
+  - path: /.well-known/agent-card.json
+    status: 301
+  - path: /.well-known/agent.json
+    status: 301
+  - path: /.well-known/api-catalog
+    status: 301
+  - path: /.well-known/ai-plugin.json
+    status: 301
+- host: https://a-shoc.myshopify.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    content_type: application/json
+    note: The endpoint the UCP profile itself advertises - https://a-shoc.myshopify.com/api/ucp/mcp.
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+  - path: /.well-known/security.txt
+    status: 301
+  - path: /.well-known/agent-card.json
+    status: 301
+  - path: /.well-known/agent.json
+    status: 301
+  - path: /.well-known/api-catalog
+    status: 301
+  - path: /.well-known/ai-plugin.json
+    status: 301
+adjacent_agent_documents:
+- path: /agents.md
+  status: 200
+  content_type: text/markdown
+  host: https://www.drinkaccelerator.com
+  description: Canonical agent-facing description of the store, titled "Agent Instructions
+    - Accelerator Active Energy".
+- path: /llms.txt
+  status: 200
+  content_type: text/markdown
+  host: https://www.drinkaccelerator.com
+  file: ../llms/adrenalineshoc-llms.txt
+  description: Mirror of /agents.md served at the llms.txt convention path.
+- path: /robots.txt
+  status: 200
+  content_type: text/plain
+  host: https://www.drinkaccelerator.com
+  description: Carries an agent policy comment block pointing at /agents.md, the UCP
+    discovery document and the UCP/MCP endpoint, and stating that checkout must not
+    be completed without contemporaneous human approval.
+- path: /sitemap_agentic_discovery.xml
+  status: 200
+  content_type: application/xml
+  host: https://www.drinkaccelerator.com
+  description: A dedicated agentic-discovery sitemap whose single entry is /agents.md.
+x-evidence:
+  fetched: '2026-09-07'
+  control_path: /.well-known/zzz-nonexistent-abc
+  control_host: https://www.drinkaccelerator.com
+  control_status: 404

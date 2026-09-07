@@ -1,0 +1,101 @@
+generated: '2026-09-07'
+method: probed
+source:
+- https://www.drinkaccelerator.com/api/ucp/mcp
+- https://www.drinkaccelerator.com/api/2026-07/graphql.json
+- https://www.drinkaccelerator.com/agents.md
+format: jsonrpc-2.0
+format_note: >-
+  Not RFC 9457. The commerce endpoint returns JSON-RPC 2.0 error objects; the GraphQL
+  endpoint returns the GraphQL errors[] array. No application/problem+json is served
+  anywhere on the host. This company publishes no error reference - every entry below
+  was either observed live or is a JSON-RPC reserved code.
+envelopes:
+- surface: mcp
+  shape: '{jsonrpc, id, error: {code, message, data: {code, content, continue_url}}}'
+  transport_status_may_differ: true
+  note: An application error arrives with a non-200 HTTP status - the observed UCP discovery
+    failure returned HTTP 422 with a JSON-RPC error body.
+- surface: graphql
+  shape: '{errors: [{message, locations, path, extensions: {code, typeName, fieldName}}]}'
+  transport_status: 200
+  note: GraphQL returns HTTP 200 even on error; agents must inspect errors[] rather than
+    the status code.
+problems:
+- id: ucp-invalid-profile-url
+  surface: mcp
+  jsonrpc_code: -32001
+  http_status: 422
+  message: UCP discovery failed
+  data_code: invalid_profile_url
+  detail: 'Unable to fetch agent profile: Missing profile uri'
+  continue_url: https://a-shoc.myshopify.com/
+  observed: true
+  remediation: >-
+    Supply meta.ucp-agent.profile as a resolvable URI pointing at your published agent
+    profile on every call. This gate fires before argument validation and before method
+    dispatch - a tools/call with an empty arguments object, and a call to a method that
+    does not exist, both return this same error.
+  significance: >-
+    tools/list is anonymous and open, but tools/call is effectively gated on the caller
+    publishing a fetchable agent profile. This is the store's agent-identity control,
+    and it is the only error an unregistered agent will ever see.
+- id: graphql-undefined-field
+  surface: graphql
+  http_status: 200
+  extensions_code: undefinedField
+  message: Field '<name>' doesn't exist on type '<type>'
+  observed: true
+  remediation: Validate the query against graphql/adrenalineshoc-storefront.graphql.
+- id: rate-limited
+  surface: mcp
+  http_status: 429
+  observed: false
+  documented: true
+  source_doc: https://www.drinkaccelerator.com/agents.md
+  detail: 'Published rule: "The MCP endpoint is rate-limited per IP. Back off on 429
+    responses."'
+  remediation: Exponential backoff. No RateLimit-* headers or numeric quota are published.
+- id: jsonrpc-parse-error
+  surface: mcp
+  jsonrpc_code: -32700
+  observed: false
+  reserved: true
+  detail: JSON-RPC 2.0 reserved code - invalid JSON received.
+- id: jsonrpc-invalid-request
+  surface: mcp
+  jsonrpc_code: -32600
+  observed: false
+  reserved: true
+- id: jsonrpc-method-not-found
+  surface: mcp
+  jsonrpc_code: -32601
+  observed: false
+  reserved: true
+  note: Not reachable in practice on this endpoint - a call to nonexistent/method returned
+    -32001 invalid_profile_url instead, because the agent-profile gate fires first.
+- id: jsonrpc-invalid-params
+  surface: mcp
+  jsonrpc_code: -32602
+  observed: false
+  reserved: true
+- id: jsonrpc-internal-error
+  surface: mcp
+  jsonrpc_code: -32603
+  observed: false
+  reserved: true
+coverage:
+  observed_live: 2
+  documented_only: 1
+  reserved_unobserved: 5
+  provider_published_error_reference: false
+x-evidence:
+- url: https://www.drinkaccelerator.com/api/ucp/mcp
+  request: '{"jsonrpc":"2.0","id":4,"method":"nonexistent/method"}'
+  http_status: 422
+- url: https://www.drinkaccelerator.com/api/ucp/mcp
+  request: tools/call get_product with empty arguments
+  http_status: 422
+- url: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+  request: '{ notAField }'
+  http_status: 200

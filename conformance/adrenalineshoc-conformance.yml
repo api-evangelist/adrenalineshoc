@@ -1,0 +1,154 @@
+generated: '2026-09-07'
+method: probed
+source:
+- https://www.drinkaccelerator.com/.well-known/ucp
+- https://www.drinkaccelerator.com/.well-known/openid-configuration
+- https://www.drinkaccelerator.com/.well-known/oauth-authorization-server
+- https://www.drinkaccelerator.com/api/ucp/mcp
+- https://www.drinkaccelerator.com/api/2026-07/graphql.json
+- https://www.drinkaccelerator.com/llms.txt
+- https://www.drinkaccelerator.com/robots.txt
+standards:
+- id: ucp-shopping
+  name: Universal Commerce Protocol - dev.ucp.shopping
+  conforms: true
+  version: '2026-08-25'
+  evidence: /.well-known/ucp returns a merchant profile declaring service dev.ucp.shopping
+    at version 2026-08-25 (with 2026-04-08 and 2026-01-23 also served), transport mcp,
+    and capabilities checkout, fulfillment, discount, cart, order, catalog.search,
+    catalog.lookup and dev.shopify.catalog.
+  spec: https://ucp.dev/2026-08-25/specification/overview/
+  domain_standard: true
+  market: agentic retail commerce
+  note: >-
+    This is the domain standard for this company's market. A buyer whose agent already
+    speaks UCP can search, cart and check out against this merchant with no bespoke
+    connector; the store declares its version train, its capability set and its payment
+    handlers in a single machine-readable profile at a registered well-known path.
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  evidence: POST /api/ucp/mcp with a JSON-RPC 2.0 tools/list request returned HTTP 200
+    and a result.tools array of 13 tools, each carrying a JSON Schema inputSchema.
+- id: jsonrpc-2.0
+  name: JSON-RPC 2.0
+  conforms: true
+  evidence: The MCP endpoint accepts and answers jsonrpc "2.0" envelopes, including
+    error objects with code/message/data.
+- id: oidc-discovery
+  name: OpenID Connect Discovery 1.0
+  conforms: true
+  evidence: /.well-known/openid-configuration returns issuer, authorization_endpoint,
+    token_endpoint, jwks_uri, response_types_supported, subject_types_supported and
+    id_token_signing_alg_values_supported.
+- id: rfc8414-oauth-metadata
+  name: RFC 8414 OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  evidence: /.well-known/oauth-authorization-server returns 200 with the required metadata
+    fields; byte-identical to the OIDC document.
+- id: oauth2-pkce
+  name: RFC 7636 PKCE
+  conforms: true
+  evidence: code_challenge_methods_supported is ["S256"].
+- id: rfc7523-jwt-bearer
+  name: RFC 7523 JWT Bearer grant
+  conforms: true
+  evidence: grant_types_supported includes urn:ietf:params:oauth:grant-type:jwt-bearer.
+- id: graphql
+  name: GraphQL (Shopify Storefront API)
+  conforms: true
+  evidence: Anonymous full introspection returned a valid __schema with 428 types, 34
+    query root fields and 41 mutations at /api/2026-07/graphql.json.
+- id: google-pay-api
+  name: Google Pay API for the Web (v2.0)
+  conforms: true
+  evidence: The UCP payment_handlers block declares com.google.pay handler gpay version
+    2026-01-11 with merchant_name "Accelerator Active Energy", merchant_origin www.drinkaccelerator.com,
+    api_version 2 and allowed card networks VISA, MASTERCARD, AMEX, DISCOVER.
+- id: iso4217-minor-units
+  name: ISO 4217 currency minor units
+  conforms: true
+  evidence: Every price-bearing tool description states that amounts are integers in
+    the currency's ISO 4217 minor units paired with a currency code.
+- id: iso3166-1-alpha2
+  name: ISO 3166-1 alpha-2 country codes
+  conforms: true
+  evidence: search_catalog context.address_country is documented as "Country code in
+    ISO 3166-1 alpha-2 format".
+- id: bcp47
+  name: IETF BCP 47 language tags
+  conforms: true
+  evidence: search_catalog context.language is documented as "Language tag in IETF BCP
+    47 format".
+- id: llmstxt
+  name: llms.txt
+  conforms: true
+  evidence: /llms.txt returns 200 text/markdown with agent-facing store instructions,
+    mirroring /agents.md.
+- id: robots-exclusion
+  name: Robots Exclusion Protocol
+  conforms: true
+  evidence: /robots.txt returns 200 with User-agent/Allow/Disallow directives plus an
+    explicit agent-policy comment block.
+- id: sitemaps-xml
+  name: sitemaps.org XML Sitemap 0.9
+  conforms: true
+  evidence: /sitemap.xml returns a valid sitemapindex, including a dedicated sitemap_agentic_discovery.xml.
+- id: rfc8615-well-known
+  name: RFC 8615 well-known URIs
+  conforms: true
+  evidence: Serves /.well-known/ucp, /.well-known/openid-configuration and /.well-known/oauth-authorization-server;
+    a control probe of /.well-known/zzz-nonexistent-abc returned 404, so these are real
+    registrations and not a catch-all.
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returned 404 on www.drinkaccelerator.com and 301-then-404
+    on every alias host.
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: Errors are JSON-RPC 2.0 error objects and GraphQL errors[] arrays; no application/problem+json
+    is served anywhere on the host.
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json returned 404 on
+    www.drinkaccelerator.com and 301 to that same 404 on drinkaccelerator.com, ashoc.com,
+    www.ashoc.com and a-shoc.myshopify.com.
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: /openapi.json returned 404 on every host; no Swagger or OpenAPI document
+    was found. See mcp/adrenalineshoc-tool-crosswalk.yml surfaces for the probe list.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: No public event, streaming or webhook surface is published for this merchant
+    storefront.
+- id: apis-json
+  name: APIs.json
+  conforms: false
+  evidence: /.well-known/api-catalog returned 404 and no apis.json is published.
+compliance_program:
+  published_by_provider: false
+  certifications: []
+  note: >-
+    A Shoc Beverage publishes no trust center, no certification list and no security.txt.
+    trust.drinkaccelerator.com does not resolve. Payment card handling is delegated to
+    Shopify, Shop Pay and Google Pay; the company's own pages make no SOC 2 / ISO 27001
+    / PCI DSS claim. No Compliance pointer is emitted.
+x-evidence:
+  fetched: '2026-09-07'
+  probes:
+  - {url: 'https://www.drinkaccelerator.com/.well-known/ucp', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/api/ucp/mcp', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/api/2026-07/graphql.json', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/.well-known/openid-configuration', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/llms.txt', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/robots.txt', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/sitemap.xml', status: 200}
+  - {url: 'https://www.drinkaccelerator.com/.well-known/security.txt', status: 404}
+  - {url: 'https://www.drinkaccelerator.com/.well-known/agent-card.json', status: 404}
+  - {url: 'https://www.drinkaccelerator.com/.well-known/api-catalog', status: 404}
+  - {url: 'https://www.drinkaccelerator.com/openapi.json', status: 404}

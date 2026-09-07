@@ -1,0 +1,167 @@
+generated: '2026-09-07'
+method: derived
+source:
+- mcp/adrenalineshoc-tools-list.json
+- graphql/adrenalineshoc-storefront.graphql
+note: >-
+  There is no OpenAPI on any host this company controls, so the usual MCP-tool ->
+  operationId binding has no REST side to bind to. The crosswalk instead binds each
+  UCP/MCP tool to the Storefront GraphQL root fields and mutations that back the same
+  capability, both of which were fetched live from the same host. Every GraphQL field
+  named below was verified verbatim in the introspected SDL. Confidence is semantic,
+  not declared: Shopify publishes no mapping between its UCP tool set and its
+  Storefront GraphQL schema, so these are our bindings, honestly graded.
+surfaces:
+  openapi:
+    present: false
+    probed:
+    - {url: 'https://www.drinkaccelerator.com/openapi.json', status: 404}
+    - {url: 'https://ashoc.com/openapi.json', status: 404}
+    - {url: 'https://a-shoc.myshopify.com/openapi.json', status: 404}
+  graphql:
+    endpoint: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+    gated: false
+    note: Anonymous full introspection returned 200 - 428 types, 34 query root fields,
+      41 mutations.
+  mcp:
+    endpoint: https://www.drinkaccelerator.com/api/ucp/mcp
+    gated: false
+    note: tools/list is anonymous. tools/call is gated on a resolvable meta.ucp-agent.profile
+      URI, so tool responses could not be sampled.
+crosswalk:
+- tool: search_catalog
+  category: catalog
+  rest: []
+  graphql: [products, search, predictiveSearch, collection.products]
+  binding: capability
+  confidence: high
+  note: Cursor pagination on the tool maps to Relay first/after on the GraphQL connections.
+- tool: lookup_catalog
+  category: catalog
+  rest: []
+  graphql: [nodes, products, productByHandle]
+  binding: capability
+  confidence: high
+- tool: get_product
+  category: catalog
+  rest: []
+  graphql: [product, productByHandle]
+  binding: capability
+  confidence: high
+- tool: create_cart
+  category: cart
+  rest: []
+  graphql: [cartCreate]
+  binding: capability
+  confidence: high
+- tool: get_cart
+  category: cart
+  rest: []
+  graphql: [cart]
+  binding: capability
+  confidence: high
+- tool: update_cart
+  category: cart
+  rest: []
+  graphql: [cartLinesAdd, cartLinesUpdate, cartLinesRemove, cartBuyerIdentityUpdate,
+    cartAttributesUpdate, cartNoteUpdate, cartDiscountCodesUpdate]
+  binding: composite
+  confidence: medium
+  note: One UCP tool fans out to seven GraphQL mutations - the tool takes a whole cart
+    object and diffs it, where GraphQL requires the caller to pick the right mutation.
+- tool: cancel_cart
+  category: cart
+  rest: []
+  graphql: [cartRemovePersonalData]
+  binding: partial
+  confidence: low
+  note: The Storefront schema has no cartDelete. cartRemovePersonalData is the closest
+    published mutation; UCP cart cancellation is likely handled server-side outside
+    the Storefront API.
+- tool: create_checkout
+  category: checkout
+  rest: []
+  graphql: [cartPrepareForCompletion]
+  binding: partial
+  confidence: low
+  note: Checkout is not a first-class Storefront GraphQL type in this schema version.
+- tool: get_checkout
+  category: checkout
+  rest: []
+  graphql: [cart, cartCompletionAttempt]
+  binding: partial
+  confidence: low
+- tool: update_checkout
+  category: checkout
+  rest: []
+  graphql: [cartDeliveryAddressesUpdate, cartDeliveryAddressesAdd, cartSelectedDeliveryOptionsUpdate,
+    cartBillingAddressUpdate]
+  binding: composite
+  confidence: medium
+- tool: complete_checkout
+  category: checkout
+  rest: []
+  graphql: [cartSubmitForCompletion, shopPayPaymentRequestSessionSubmit]
+  binding: capability
+  confidence: medium
+  note: The only financially consequential tool. The store's published policy requires
+    contemporaneous human buyer approval here.
+- tool: cancel_checkout
+  category: checkout
+  rest: []
+  graphql: []
+  binding: none
+  confidence: low
+- tool: get_order
+  category: order
+  rest: []
+  graphql: [customer.orders]
+  binding: partial
+  confidence: medium
+  note: The GraphQL path requires a customer access token; the MCP tool resolves an
+    order directly by id.
+mcp_only:
+- tool: cancel_checkout
+  reason: No Storefront GraphQL mutation cancels a checkout in this schema version.
+- tool: create_checkout
+  reason: UCP models Checkout as a distinct resource with its own id; the Storefront
+    schema exposes only Cart and a completion attempt.
+graphql_only:
+- fields: [article, articles, blog, blogByHandle, blogs, page, pageByHandle, pages,
+    menu, metaobject, metaobjects, sitemap, urlRedirects, shop, localization, locations,
+    paymentSettings, productTags, productTypes, productRecommendations, publicApiVersions,
+    node]
+  reason: Content, store metadata and merchandising surfaces with no UCP shopping tool.
+- fields: [customerAccessTokenCreate, customerAccessTokenRenew, customerAccessTokenDelete,
+    customerCreate, customerUpdate, customerActivate, customerRecover, customerReset,
+    customerAddressCreate, customerAddressUpdate, customerAddressDelete, customerDefaultAddressUpdate,
+    customer]
+  reason: Customer identity and account management. UCP shopping is buyer-anonymous
+    by design; identity is handled by Shopify Customer Accounts OIDC instead.
+- fields: [cartGiftCardCodesAdd, cartGiftCardCodesRemove, cartGiftCardCodesUpdate,
+    cartMetafieldsSet, cartMetafieldDelete, cartClone, cartPaymentUpdate, cartDeliveryAddressesRemove,
+    cartDeliveryAddressesReplace]
+  reason: Cart capabilities with no equivalent field in the UCP cart object.
+rest_only: []
+rest_only_note: No REST/OpenAPI surface exists to enumerate.
+coverage:
+  mcp_tools: 13
+  mcp_tools_bound: 12
+  mcp_tools_unbound: 1
+  graphql_query_fields: 34
+  graphql_mutations: 41
+  graphql_fields_bound: 26
+  rest_operations: 0
+  confidence:
+    high: 5
+    medium: 4
+    low: 4
+x-evidence:
+- url: https://www.drinkaccelerator.com/api/ucp/mcp
+  http_status: 200
+  note: tools/list
+- url: https://www.drinkaccelerator.com/api/2026-07/graphql.json
+  http_status: 200
+  note: anonymous full introspection
+- url: https://www.drinkaccelerator.com/openapi.json
+  http_status: 404

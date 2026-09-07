@@ -1,0 +1,36 @@
+generated: '2026-09-07'
+method: searched
+source: https://www.drinkaccelerator.com/
+docs: https://www.drinkaccelerator.com/pages/store-locator
+plan_count: 0
+plans: []
+note: >-
+  An honest zero, and a category note rather than a gap. A Shoc Beverage sells canned
+  energy drinks, not API access - there is no developer program, no API pricing page,
+  no free tier and no paid tier for any of the surfaces profiled here. The UCP/MCP
+  commerce endpoint and the Storefront GraphQL API are open to anonymous callers at
+  no charge because they are the store's own shopping surface, not a product.
+  Consumer product pricing is not published on this site either: the storefront's
+  own catalog is empty (/products.json returns zero products, and the sitemap index
+  carries no product sitemap), and the site routes buyers to Amazon and to physical
+  retail via a store locator instead of listing prices.
+commercial_model:
+  what_is_sold: canned energy drinks, 16oz, zero sugar
+  api_monetized: false
+  developer_program: false
+  purchase_channels:
+  - Amazon (linked throughout the site)
+  - physical retail (Walmart, Target, 7-Eleven, CVS, HEB, Hy-Vee, QuikTrip and others,
+    via the store locator)
+  own_storefront_catalog: empty at profiling time
+x-evidence:
+- url: https://www.drinkaccelerator.com/
+  http_status: 200
+- url: https://www.drinkaccelerator.com/products.json
+  http_status: 200
+  note: 'body {"products":[]}'
+- url: https://www.drinkaccelerator.com/collections/all/products.json
+  http_status: 200
+  note: 'body {"products":[]}'
+- url: https://www.drinkaccelerator.com/pages/store-locator
+  http_status: 200
