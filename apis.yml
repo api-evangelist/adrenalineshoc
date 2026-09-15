@@ -1,21 +1,18 @@
 aid: adrenalineshoc
 name: Adrenaline Shoc
-description: 'Adrenaline Shoc (A SHOC) is the performance energy drink brand of A Shoc
-  Beverage, LLC, trading today as Accelerator Active Energy and headquartered in Newport
-  Beach, California. Founded in 2019 by beverage entrepreneur Lance Collins, the company
-  sells zero-sugar 16oz energy drinks built on a plant-based caffeine blend of green
-  coffee bean, yerba mate, coffee fruit extract and guarana with electrolytes and amino
-  acids, distributed nationally through Keurig Dr Pepper and sold in roughly 80,000
-  US retail doors. It is not a software company and publishes no developer program,
-  OpenAPI, SDK or API reference. Its entire public machine-readable surface is its
-  direct-to-consumer storefront at drinkaccelerator.com (ashoc.com redirects there):
-  a Shopify-hosted store that serves agent instructions at /agents.md and /llms.txt,
-  a Universal Commerce Protocol merchant profile at /.well-known/ucp, an anonymous
-  Model Context Protocol endpoint exposing thirteen catalog, cart, checkout and order
-  tools, and an openly introspectable Storefront GraphQL API. The storefront catalog
-  itself is currently empty — /products.json returns zero products and the sitemap
-  index carries no product sitemap — so the commerce protocol is live over a store
-  that sells nothing online; purchase is directed to Amazon and physical retail.'
+description: 'Adrenaline Shoc (A SHOC) is the performance energy drink brand of A Shoc Beverage, LLC,
+  trading today as Accelerator Active Energy and headquartered in Newport Beach, California. Founded in
+  2019 by beverage entrepreneur Lance Collins, the company sells zero-sugar 16oz energy drinks built on
+  a plant-based caffeine blend of green coffee bean, yerba mate, coffee fruit extract and guarana with
+  electrolytes and amino acids, distributed nationally through Keurig Dr Pepper and sold in roughly 80,000
+  US retail doors. It is not a software company and publishes no developer program, OpenAPI, SDK or API
+  reference. Its entire public machine-readable surface is its direct-to-consumer storefront at drinkaccelerator.com
+  (ashoc.com redirects there): a Shopify-hosted store that serves agent instructions at /agents.md and
+  /llms.txt, a Universal Commerce Protocol merchant profile at /.well-known/ucp, an anonymous Model Context
+  Protocol endpoint exposing thirteen catalog, cart, checkout and order tools, and an openly introspectable
+  Storefront GraphQL API. The storefront catalog itself is currently empty — /products.json returns zero
+  products and the sitemap index carries no product sitemap — so the commerce protocol is live over a
+  store that sells nothing online; purchase is directed to Amazon and physical retail.'
 image: https://www.drinkaccelerator.com/cdn/shop/files/email-template-header2.png?v=1698185358
 url: https://raw.githubusercontent.com/api-evangelist/adrenalineshoc/refs/heads/main/apis.yml
 x-type: company
@@ -45,15 +42,14 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- aid: adrenalineshoc-ucp-commerce-mcp
+- aid: adrenalineshoc:adrenalineshoc-ucp-commerce-mcp
   name: Accelerator Active Energy UCP Commerce MCP API
-  description: An anonymous Model Context Protocol endpoint implementing the Universal
-    Commerce Protocol (UCP) shopping service on the Accelerator Active Energy storefront
-    host. tools/list returns thirteen tools with full JSON Schema input contracts covering
-    catalog search and lookup, product detail, cart lifecycle, checkout lifecycle and
-    order retrieval. tools/call is gated on the caller supplying a resolvable UCP agent
-    profile URI, and checkout completion requires contemporaneous human buyer approval
-    per the store's published agent policy.
+  description: An anonymous Model Context Protocol endpoint implementing the Universal Commerce Protocol
+    (UCP) shopping service on the Accelerator Active Energy storefront host. tools/list returns thirteen
+    tools with full JSON Schema input contracts covering catalog search and lookup, product detail, cart
+    lifecycle, checkout lifecycle and order retrieval. tools/call is gated on the caller supplying a resolvable
+    UCP agent profile URI, and checkout completion requires contemporaneous human buyer approval per the
+    store's published agent policy.
   humanURL: https://www.drinkaccelerator.com/agents.md
   baseURL: https://www.drinkaccelerator.com/api/ucp/mcp
   tags:
@@ -67,13 +63,13 @@ apis:
     url: mcp/adrenalineshoc-mcp.yml
   - type: ToolCrosswalk
     url: mcp/adrenalineshoc-tool-crosswalk.yml
-- aid: adrenalineshoc-storefront-graphql
+- aid: adrenalineshoc:adrenalineshoc-storefront-graphql
   name: Accelerator Active Energy Storefront GraphQL API
-  description: The Shopify Storefront GraphQL API as deployed on the Accelerator Active
-    Energy domain. Anonymous full introspection is open and returns 428 types, 34 query
-    root fields and 41 mutations covering products, collections, blogs, pages, search,
-    cart, customer accounts and Shop Pay payment request sessions. Dated versions are
-    selected in the URL path; 2026-07, 2026-04, 2025-01 and 2024-04 all answer.
+  description: The Shopify Storefront GraphQL API as deployed on the Accelerator Active Energy domain.
+    Anonymous full introspection is open and returns 428 types, 34 query root fields and 41 mutations
+    covering products, collections, blogs, pages, search, cart, customer accounts and Shop Pay payment
+    request sessions. Dated versions are selected in the URL path; 2026-07, 2026-04, 2025-01 and 2024-04
+    all answer.
   humanURL: https://shopify.dev/docs/api/storefront
   baseURL: https://www.drinkaccelerator.com/api/2026-07/graphql.json
   tags:
@@ -84,12 +80,12 @@ apis:
   properties:
   - type: GraphQL
     url: graphql/adrenalineshoc-storefront.graphql
-- aid: adrenalineshoc-storefront-json
+- aid: adrenalineshoc:adrenalineshoc-storefront-json
   name: Accelerator Active Energy Storefront JSON Endpoints
-  description: The read-only JSON surface the store's own agent instructions document
-    for agents that only need to browse catalog data without transacting - product
-    JSON by handle, collection product listings, and product search. No authentication
-    is required. Observed empty at profiling time - /products.json returns {"products":[]}.
+  description: The read-only JSON surface the store's own agent instructions document for agents that
+    only need to browse catalog data without transacting - product JSON by handle, collection product
+    listings, and product search. No authentication is required. Observed empty at profiling time - /products.json
+    returns {"products":[]}.
   humanURL: https://www.drinkaccelerator.com/agents.md
   baseURL: https://www.drinkaccelerator.com/
   tags:
