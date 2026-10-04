@@ -74,6 +74,9 @@ apis:
     url: mcp/adrenalineshoc-mcp.yml
   - type: ToolCrosswalk
     url: mcp/adrenalineshoc-tool-crosswalk.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 - aid: adrenalineshoc:adrenalineshoc-storefront-graphql
   name: Accelerator Active Energy Storefront GraphQL API
   description: The Shopify Storefront GraphQL API as deployed on the Accelerator Active Energy domain.
@@ -91,6 +94,9 @@ apis:
   properties:
   - type: GraphQL
     url: graphql/adrenalineshoc-storefront.graphql
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-graphql
 - aid: adrenalineshoc:adrenalineshoc-storefront-json
   name: Accelerator Active Energy Storefront JSON Endpoints
   description: The read-only JSON surface the store's own agent instructions document for agents that
@@ -98,7 +104,6 @@ apis:
     listings, and product search. No authentication is required. Observed empty at profiling time - /products.json
     returns {"products":[]}.
   humanURL: https://www.drinkaccelerator.com/agents.md
-  baseURL: https://www.drinkaccelerator.com/
   tags:
   - JSON
   - Catalog
@@ -106,6 +111,9 @@ apis:
   properties:
   - type: Documentation
     url: https://www.drinkaccelerator.com/agents.md
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-json
 common:
 - type: DomainSecurity
   url: security/adrenalineshoc-domain-security.yml
