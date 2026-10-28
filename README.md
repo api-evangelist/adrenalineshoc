@@ -1,4 +1,4 @@
-# Adrenalineshoc
+# Adrenaline Shoc
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,5 +64,120 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Adrenalineshoc is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://equityzen.com/company/adrenalineshoc
+Adrenaline Shoc (A SHOC) is the performance energy drink brand of A Shoc Beverage, LLC, trading today as Accelerator Active Energy and headquartered in Newport Beach, California. Founded in 2019 by beverage entrepreneur Lance Collins, the company sells zero-sugar 16oz energy drinks built on a plant-based caffeine blend of green coffee bean, yerba mate, coffee fruit extract and guarana with electrolytes and amino acids, distributed nationally through Keurig Dr Pepper and sold in roughly 80,000 US retail doors. It is not a software company and publishes no developer program, OpenAPI, SDK or API reference. Its entire public machine-readable surface is its direct-to-consumer storefront at drinkaccelerator.com (ashoc.com redirects there): a Shopify-hosted store that serves agent instructions at /agents.md and /llms.txt, a Universal Commerce Protocol merchant profile at /.well-known/ucp, an anonymous Model Context Protocol endpoint exposing thirteen catalog, cart, checkout and order tools, and an openly introspectable Storefront GraphQL API. The storefront catalog itself is currently empty — /products.json returns zero products and the sitemap index carries no product sitemap — so the commerce protocol is live over a store that sells nothing online; purchase is directed to Amazon and physical retail.
+
+**Areas:** Company · Beverages · Energy Drinks · Consumer Packaged Goods · Retail · E-Commerce · Direct to Consumer · Agentic Commerce · Shopify · Sports Nutrition
+
+## Adrenaline Shoc on APIs.io
+
+Everything profiled for Adrenaline Shoc is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/adrenalineshoc/](https://apis.io/providers/adrenalineshoc/)** — or go straight to one of the APIs or properties below.
+
+### APIs (3)
+
+- [Accelerator Active Energy UCP Commerce MCP API](https://apis.io/apis/adrenalineshoc/adrenalineshoc-ucp-commerce-mcp/) — An anonymous Model Context Protocol endpoint implementing the Universal Commerce Protocol (UCP) shopping service on the Accelerator Active Energy storefront…
+- [Accelerator Active Energy Storefront GraphQL API](https://apis.io/apis/adrenalineshoc/adrenalineshoc-storefront-graphql/) — The Shopify Storefront GraphQL API as deployed on the Accelerator Active Energy domain. Anonymous full introspection is open and returns 428 types, 34 query…
+- [Accelerator Active Energy Storefront JSON Endpoints](https://apis.io/apis/adrenalineshoc/adrenalineshoc-storefront-json/) — The read-only JSON surface the store's own agent instructions document for agents that only need to browse catalog data without transacting - product JSON…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [adrenalineshoc-ucp-shopping](https://apis.io/servers/adrenalineshoc/adrenalineshoc-ucp-shopping/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Adrenalineshoc Agentic Access](https://apis.io/agentic-access/adrenalineshoc/adrenalineshoc-agentic-access/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Adrenalineshoc Authentication](https://apis.io/security/adrenalineshoc/adrenalineshoc-authentication/)
+- [Adrenalineshoc Domain Security](https://apis.io/security/adrenalineshoc/adrenalineshoc-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Adrenalineshoc Scopes](https://apis.io/scopes/adrenalineshoc/adrenalineshoc-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Adrenalineshoc Plans Pricing](https://apis.io/plans/adrenalineshoc/adrenalineshoc-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Adrenalineshoc Rate Limits](https://apis.io/rate-limits/adrenalineshoc/adrenalineshoc-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.drinkaccelerator.com/)
+- [Documentation](https://www.drinkaccelerator.com/agents.md)
+- [Support](https://www.drinkaccelerator.com/pages/contact-us)
+- [Terms of service](https://www.drinkaccelerator.com/policies/terms-of-service)
+- [Privacy policy](https://www.drinkaccelerator.com/policies/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 26.3** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 71.7 |
+| Contract quality | 10.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 28.0 |
+| Access clarity | 27.6 |
+
+**Agent readiness 40.3** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | yes |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | platform (partial credit) |
+
+**Regulatory alignment 34.4** — Energy & Utilities
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/adrenalineshoc/](https://apis.io/providers/adrenalineshoc/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Adrenaline Shoc: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/adrenalineshoc/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
