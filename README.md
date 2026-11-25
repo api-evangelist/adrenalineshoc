@@ -92,32 +92,32 @@ Model Context Protocol servers that expose the API to agents.
 
 Which operations an agent can call, which act, and which need a human in the loop.
 
-- [Adrenalineshoc Agentic Access](https://apis.io/agentic-access/adrenalineshoc/adrenalineshoc-agentic-access/)
+- [Adrenaline Shoc Agentic Access](https://apis.io/agentic-access/adrenalineshoc/adrenalineshoc-agentic-access/)
 
 #### Security (2)
 
 Authentication, trust centre, and vulnerability disclosure.
 
-- [Adrenalineshoc Authentication](https://apis.io/security/adrenalineshoc/adrenalineshoc-authentication/)
-- [Adrenalineshoc Domain Security](https://apis.io/security/adrenalineshoc/adrenalineshoc-domain-security/)
+- [Adrenaline Shoc Authentication](https://apis.io/security/adrenalineshoc/adrenalineshoc-authentication/)
+- [Adrenaline Shoc Domain Security](https://apis.io/security/adrenalineshoc/adrenalineshoc-domain-security/)
 
 #### OAuth scopes (1)
 
 The permissions the API asks for.
 
-- [Adrenalineshoc Scopes](https://apis.io/scopes/adrenalineshoc/adrenalineshoc-scopes/)
+- [Adrenaline Shoc Scopes](https://apis.io/scopes/adrenalineshoc/adrenalineshoc-scopes/)
 
 #### Plans and pricing (1)
 
 Published plans, tiers and prices.
 
-- [Adrenalineshoc Plans Pricing](https://apis.io/plans/adrenalineshoc/adrenalineshoc-plans-pricing/)
+- [Adrenaline Shoc Plans Pricing](https://apis.io/plans/adrenalineshoc/adrenalineshoc-plans-pricing/)
 
 #### Rate limits (1)
 
 Published request limits.
 
-- [Adrenalineshoc Rate Limits](https://apis.io/rate-limits/adrenalineshoc/adrenalineshoc-rate-limits/)
+- [Adrenaline Shoc Rate Limits](https://apis.io/rate-limits/adrenalineshoc/adrenalineshoc-rate-limits/)
 
 ## Where to find this API
 
@@ -131,7 +131,7 @@ Links to the company's own pages. This repository publishes no copy of their spe
 
 ## API Evangelist rating
 
-**Kin Score 26.3** — thin · rubric 0.24.0 · scored 2026-10-17
+**Kin Score 28.5** — thin · rubric 0.28.1 · scored 2026-11-21
 
 | Facet | Score |
 |---|---|
@@ -140,9 +140,9 @@ Links to the company's own pages. This repository publishes no copy of their spe
 | Contract governance | 18.2 |
 | Operational transparency | 0.0 |
 | Developer ergonomics | 28.0 |
-| Access clarity | 27.6 |
+| Access clarity | 42.6 |
 
-**Agent readiness 40.3** — agent-ready (gated down from agent-native)
+**Agent readiness 39.4** — agent-ready (gated down from agent-native)
 
 | Agent-readiness dimension | Result |
 |---|---|
@@ -165,8 +165,14 @@ Links to the company's own pages. This repository publishes no copy of their spe
 | Protected Resource Metadata | — |
 | Dynamic Client Registration | — |
 | Agentic Commerce | platform (partial credit) |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+| MCP Tool Quality | na |
+| Onboarding Descriptor | — |
+| Dns Aid Index | na |
+| Markdown Negotiation | na |
 
-**Regulatory alignment 34.4** — Energy & Utilities
+**Regulatory alignment 29.5** — Energy & Utilities
 
 The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/adrenalineshoc/](https://apis.io/providers/adrenalineshoc/).
 
